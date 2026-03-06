@@ -1,98 +1,102 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Echo Craft | Sınırları Zorla</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #121212;
-            color: white;
-            text-align: center;
-        }
-        header {
-            padding: 100px 20px;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.alphacoders.com/132/1327150.png');
-            background-size: cover;
-            background-position: center;
-        }
-        .logo {
-            font-size: 4rem;
-            font-weight: bold;
-            color: #00ffcc;
-            text-shadow: 0 0 20px #00ffcc;
-            margin-bottom: 10px;
-        }
-        .ip-box {
-            background: #1e1e1e;
-            display: inline-block;
-            padding: 15px 30px;
-            border-radius: 50px;
-            border: 2px solid #00ffcc;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 20px;
-        }
-        .ip-box:hover {
-            background: #00ffcc;
-            color: #121212;
-        }
-        .features {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            padding: 50px;
-            flex-wrap: wrap;
-        }
-        .card {
-            background: #1e1e1e;
-            padding: 20px;
-            border-radius: 15px;
-            width: 250px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-        }
-        .card h3 { color: #00ffcc; }
-        footer { padding: 20px; background: #080808; font-size: 14px; color: #555; }
-    </style>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Modrinth Pack to Zip Converter</title>
+
+	<link rel="stylesheet" href="./assets/css/bulma.min.css">
 </head>
 <body>
 
-<header>
-    <div class="logo">ECHO CRAFT</div>
-    <p>Efsanevi Bir Survival Deneyimi Seni Bekliyor!</p>
-    <div class="ip-box" onclick="copyIP()">
-        IP: <span id="server-ip">play.echocraft.com</span>
-    </div>
-</header>
+<nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+	<div class="navbar-brand">
+		<span class="navbar-item">
+			Modrinth Pack to Zip Converter
+		</span>
+	</div>
+</nav>	
 
-<section class="features">
-    <div class="card">
-        <h3>Özel Sistemler</h3>
-        <p>Gelişmiş ekonomi ve daha önce görmediğin etkinlikler.</p>
-    </div>
-    <div class="card">
-        <h3>0 Lag</h3>
-        <p>Yüksek performanslı makinelerle kesintisiz oyun keyfi.</p>
-    </div>
-    <div class="card">
-        <h3>Adaletli Oyun</h3>
-        <p>P2W olmayan, emeğin değer gördüğü bir ortam.</p>
-    </div>
+<section class="section">
+	<div class="container centre">
+
+		<h3 class="subtitle is-2 is-bold">How to use</h3>
+
+		<ol>
+			<li>Upload a Modrinth pack (.mrpack)</li>
+			<li>Click the Download button, and wait for the pack to be downloaded</li>
+		</ol>
+
+		<hr>
+		
+		<div class="file has-name is-boxed">
+			<label class="file-label">
+				<input
+					id="file-input"
+					class="file-input"
+					type="file"
+					name="resume"
+					accept=".mrpack"
+					onchange="updateFileName()">
+
+				<span class="file-cta">
+					<span class="file-icon">
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+						</svg>
+					</span>
+					<span class="file-label">
+						Choose a file…
+					</span>
+				</span>
+				<span id="file-name" class="file-name">
+					No file selected
+				</span>
+			</label>
+		</div>
+
+		<br>
+
+		<button class="button" onclick="downloadPack()">
+			<span class="icon">
+		    	<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+				</svg>
+			</span>
+
+			<span>Download</span>
+		</button>
+
+	</div>
 </section>
 
-<footer>
-    &copy; 2024 Echo Craft - Tüm Hakları Saklıdır.
+<footer class="footer">
+	<div class="content">
+		<p>Copyright (c) Jamie Mansfield MMXXII</p>
+	</div>
 </footer>
 
-<script>
-    function copyIP() {
-        const ip = document.getElementById('server-ip').innerText;
-        navigator.clipboard.writeText(ip);
-        alert("IP Adresi Kopyalandı: " + ip);
-    }
-</script>
+<div id="loading-modal" class="modal">
+	<div class="modal-background"></div>
+	<div class="modal-card">
+		<header class="modal-card-head">
+			<p class="modal-card-title">Downloading pack</p>
+		</header>
+		<section class="modal-card-body">
+			<p>
+				Files required for the modpack are currently being downloaded, please wait.
+			</p>
+		</section>
+		<footer class="modal-card-foot">
+			<progress id="loading-progress" class="progress is-primary" value="0" max="100">0%</progress>
+		</footer>
+	</div>
+</div>
+
+<script src="./assets/js/FileSaver.min.js"></script>
+<script src="./assets/js/jszip.min.js"></script>
+<script src="./assets/js/converter.js"></script>
 
 </body>
 </html>
