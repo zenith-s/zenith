@@ -1,102 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-
-	<title>Modrinth Pack to Zip Converter</title>
-
-	<link rel="stylesheet" href="./assets/css/bulma.min.css">
+    <meta charset="UTF-8">
+    <title>Echo Craft | GitHub Panel</title>
+    <style>
+        :root { --primary: #00fbff; --bg: #0d0d0d; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; }
+        .sidebar { width: 250px; background: #1a1a1a; height: 100vh; border-right: 2px solid var(--primary); padding: 20px; box-sizing: border-box; }
+        .main { flex: 1; padding: 40px; }
+        .card { background: #222; padding: 20px; border-radius: 10px; border-left: 5px solid var(--primary); margin-bottom: 20px; }
+        .status-on { color: #00ff22; text-shadow: 0 0 10px #00ff22; font-weight: bold; }
+        .btn-invite { background: var(--primary); color: black; padding: 12px; border: none; border-radius: 5px; width: 100%; cursor: pointer; font-weight: bold; text-decoration: none; display: block; text-align: center; }
+    </style>
 </head>
 <body>
-
-<nav class="navbar is-dark" role="navigation" aria-label="main navigation">
-	<div class="navbar-brand">
-		<span class="navbar-item">
-			Modrinth Pack to Zip Converter
-		</span>
-	</div>
-</nav>	
-
-<section class="section">
-	<div class="container centre">
-
-		<h3 class="subtitle is-2 is-bold">How to use</h3>
-
-		<ol>
-			<li>Upload a Modrinth pack (.mrpack)</li>
-			<li>Click the Download button, and wait for the pack to be downloaded</li>
-		</ol>
-
-		<hr>
-		
-		<div class="file has-name is-boxed">
-			<label class="file-label">
-				<input
-					id="file-input"
-					class="file-input"
-					type="file"
-					name="resume"
-					accept=".mrpack"
-					onchange="updateFileName()">
-
-				<span class="file-cta">
-					<span class="file-icon">
-						<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-						</svg>
-					</span>
-					<span class="file-label">
-						Choose a file…
-					</span>
-				</span>
-				<span id="file-name" class="file-name">
-					No file selected
-				</span>
-			</label>
-		</div>
-
-		<br>
-
-		<button class="button" onclick="downloadPack()">
-			<span class="icon">
-		    	<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-					<path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-				</svg>
-			</span>
-
-			<span>Download</span>
-		</button>
-
-	</div>
-</section>
-
-<footer class="footer">
-	<div class="content">
-		<p>Copyright (c) Jamie Mansfield MMXXII</p>
-	</div>
-</footer>
-
-<div id="loading-modal" class="modal">
-	<div class="modal-background"></div>
-	<div class="modal-card">
-		<header class="modal-card-head">
-			<p class="modal-card-title">Downloading pack</p>
-		</header>
-		<section class="modal-card-body">
-			<p>
-				Files required for the modpack are currently being downloaded, please wait.
-			</p>
-		</section>
-		<footer class="modal-card-foot">
-			<progress id="loading-progress" class="progress is-primary" value="0" max="100">0%</progress>
-		</footer>
-	</div>
-</div>
-
-<script src="./assets/js/FileSaver.min.js"></script>
-<script src="./assets/js/jszip.min.js"></script>
-<script src="./assets/js/converter.js"></script>
-
+    <div class="sidebar">
+        <h2 style="color: var(--primary);">ECHO CRAFT</h2>
+        <p>📊 Dashboard</p>
+        <p>📦 BoxMining Yönetimi</p>
+        <hr style="border-color: #333;">
+        <a href="https://discord.com/oauth2/authorize?client_id=1424304442945310760&scope=applications.commands%20bot&permissions=8" class="btn-invite" target="_blank">Botu Davet Et</a>
+    </div>
+    <div class="main">
+        <h1>GitHub Kontrol Paneli</h1>
+        <div class="card">
+            <h3>Bot Durumu</h3>
+            <p class="status-on">GitHub Actions ile 7/24 Aktif</p>
+        </div>
+        <div class="card">
+            <h3>Sunucu Bağlantısı</h3>
+            <p>echocraft.denince.biz</p>
+        </div>
+        <div class="card" style="background: #000; font-family: monospace; color: var(--primary);">
+            > [GITHUB]: Workflow başlatıldı...<br>
+            > [BOT]: Echo Craft (1424304442945310760) başarıyla bağlandı.
+        </div>
+    </div>
 </body>
 </html>
