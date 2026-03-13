@@ -3,147 +3,438 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VextaNW | Echo Craft Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Zenith Network</title>
     <style>
-        :root { --primary: #00fbff; --bg: #050505; --card: #121212; }
-
-        /* ÖZEL X-CURSOR */
-        * { cursor: none !important; }
-        #cursor {
-            width: 15px; height: 15px;
-            background: var(--primary);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            box-shadow: 0 0 15px var(--primary), 0 0 30px var(--primary);
-            transition: transform 0.1s ease;
+        /* GECE / GÜNDÜZ TEMA DEĞİŞKENLERİ */
+        :root {
+            --bg-color: #f4f6f9;
+            --nav-bg: #2c3e50;
+            --nav-border: #1a252f;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --text-muted: #7f8c8d;
+            --primary: #1abc9c; /* Turkuaz / Yeşil tercihine uygun */
+            --secondary: #34495e;
+            --danger: #e74c3c;
+            --border-color: #ecf0f1;
+            --wave-bg: #34495e;
         }
 
-        body {
-            background-color: var(--bg);
-            color: white;
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            overflow-x: hidden;
+        [data-theme="dark"] {
+            --bg-color: #1a1a24;
+            --nav-bg: #111118;
+            --nav-border: #0a0a0f;
+            --card-bg: #252533;
+            --text-color: #ecf0f1;
+            --text-muted: #bdc3c7;
+            --primary: #00ff9d; /* Parlak Turkuaz */
+            --secondary: #2c3e50;
+            --danger: #ff4b4b;
+            --border-color: #333344;
+            --wave-bg: #1c2833;
         }
 
-        /* ANİMASYONLU BAŞLIK */
-        .header {
-            margin-top: 50px;
-            text-align: center;
-            animation: fadeInDown 1s ease;
-        }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background-color 0.3s, color 0.3s; }
+        body { margin: 0; background-color: var(--bg-color); color: var(--text-color); }
+        a { color: var(--primary); text-decoration: none; }
+        .hidden { display: none !important; }
 
-        h1 { color: var(--primary); font-size: 3rem; letter-spacing: 8px; text-shadow: 0 0 20px #00fbff66; margin-bottom: 5px; }
+        /* Navbar */
+        nav { background-color: var(--nav-bg); border-bottom: 4px solid var(--nav-border); padding: 0 50px; display: flex; justify-content: space-between; align-items: center; color: white; }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links a, .nav-links button { color: white; padding: 15px 10px; cursor: pointer; background: transparent; border: none; font-size: 16px; font-weight: bold; }
+        .nav-links a:hover, .nav-links button:hover { color: var(--primary); }
+        .theme-switch { background: var(--primary); color: #000; border: none; padding: 5px 15px; border-radius: 15px; cursor: pointer; font-weight: bold; }
+
+        /* Layout */
+        .container { max-width: 1200px; margin: 30px auto; display: flex; gap: 20px; padding: 0 20px; }
+        .main-content { flex: 3; }
+        .sidebar { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        /* Kartlar & Bileşenler (Görsellerdeki gibi) */
+        .card { background: var(--card-bg); border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border: 1px solid var(--border-color); overflow: hidden; }
+        .card-header-wave { background: var(--wave-bg); color: white; padding: 15px; text-align: center; font-weight: bold; border-bottom: 3px dashed var(--primary); position: relative; }
         
-        /* CANLI DURUM ÇUBUĞU */
-        .status-bar {
-            background: var(--card);
-            padding: 10px 30px;
-            border-radius: 50px;
-            border: 1px solid #333;
-            display: flex;
-            gap: 20px;
-            font-size: 0.9rem;
-            margin-bottom: 40px;
-        }
+        /* Widget Tabloları */
+        .widget-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .widget-table th { padding: 10px; border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-size: 12px; }
+        .widget-table td { padding: 10px; border-bottom: 1px solid var(--border-color); font-size: 14px; }
+        .widget-table tr:last-child td { border-bottom: none; }
+        .mc-head { width: 24px; height: 24px; border-radius: 4px; vertical-align: middle; margin-right: 10px; }
 
-        .online-dot { height: 10px; width: 10px; background: #00ff22; border-radius: 50%; display: inline-block; box-shadow: 0 0 10px #00ff22; }
+        /* Formlar & Butonlar */
+        input, textarea, select { width: 100%; padding: 10px; margin: 10px 0; background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 5px; }
+        button.btn { background: var(--primary); color: #000; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 5px; }
+        button.btn:hover { opacity: 0.8; }
+        button.btn-dark { background: var(--secondary); color: white; }
 
-        /* KATEGORİ IZGARASI */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            width: 90%;
-            max-width: 1000px;
-            padding-bottom: 50px;
-        }
+        /* Kullanıcı Paneli (Resimdeki) */
+        .user-panel-info { padding: 20px; text-align: left; font-size: 14px; }
+        .user-panel-info p { margin: 5px 0; }
+        .user-panel-info span { color: var(--primary); font-weight: bold; }
+        .user-panel-buttons button { margin-bottom: 10px; }
 
-        .category-card {
-            background: var(--card);
-            padding: 25px;
-            border-radius: 15px;
-            border: 1px solid #222;
-            transition: 0.4s;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
+        /* Mağaza Grid */
+        .market-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; padding: 20px; }
+        .market-item { border: 1px solid var(--border-color); border-radius: 5px; padding: 15px; text-align: center; }
+        .market-item img { max-width: 100px; height: 100px; object-fit: contain; margin-bottom: 10px; }
 
-        .category-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-10px);
-            box-shadow: 0 10px 30px rgba(0, 251, 255, 0.1);
-        }
-
-        .category-card h3 { color: var(--primary); margin: 0 0 10px 0; }
-        .category-card p { font-size: 0.85rem; color: #aaa; margin: 0; }
-
-        /* ANİMASYONLAR */
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* MOBİL UYUM */
-        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+        /* Footer */
+        footer { background: #1a1a1a; color: #a0a0a0; padding: 40px 20px; margin-top: 50px; }
+        .footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; }
+        .footer-col h4 { color: white; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
-    <div id="cursor"></div>
+    <nav>
+        <h2 style="margin:0; color:var(--primary);">ZENITH</h2>
+        <div class="nav-links">
+            <a onclick="navigate('home')"><i class="fa fa-home"></i> Ana sayfa</a>
+            <a onclick="navigate('market')">Market</a>
+            <a onclick="navigate('coupons')">Kupon</a>
+            <a onclick="navigate('add-credit')">₺ Kredi Yükle</a>
+            <a onclick="navigate('admin')" id="nav-admin" class="hidden">Admin Panel</a>
+        </div>
+        <div>
+            <button class="theme-switch" onclick="toggleTheme()">Gece/Gündüz</button>
+        </div>
+    </nav>
 
-    <div class="header">
-        <h1>VextaNW</h1>
-        <p>Echo Craft Gelişmiş Bot Yönetim Paneli</p>
+    <div class="container">
+        <div class="main-content">
+            
+            <div id="page-home" class="card">
+                <div class="card-header-wave">Sunucu Duyuruları</div>
+                <div style="padding: 20px;" id="blog-list">
+                    Hiç blog yazısı eklenmemiş!
+                </div>
+            </div>
+
+            <div id="page-market" class="card hidden">
+                <div class="card-header-wave">Market</div>
+                <div class="market-grid" id="market-list"></div>
+            </div>
+
+            <div id="page-add-credit" class="card hidden">
+                <div class="card-header-wave">Kredi Yükle</div>
+                <div style="padding: 20px; text-align:center;">
+                    <h3>Bakiye Satın Al</h3>
+                    <p>Lütfen ödeme yöntemi seçin. Satın aldıktan sonra admin onayına düşer veya otomatik eklenir.</p>
+                    <button class="btn" onclick="openPayment('shopier')">Shopier ile Öde</button>
+                    <button class="btn btn-dark" onclick="openPayment('paypal')">PayPal ile Öde</button>
+                </div>
+            </div>
+
+            <div id="page-coupons" class="card hidden">
+                <div class="card-header-wave">Kupon Bozdur</div>
+                <div style="padding: 20px;">
+                    <input type="text" id="use-coupon-code" placeholder="Kupon Kodunu Girin">
+                    <button class="btn" onclick="redeemCoupon()">Kullan</button>
+                </div>
+            </div>
+
+            <div id="page-auth" class="card hidden">
+                <div class="card-header-wave">Giriş Yap / Kayıt Ol</div>
+                <div style="padding: 20px; display:flex; gap:20px;">
+                    <div style="flex:1;">
+                        <h3>Giriş Yap</h3>
+                        <input type="text" id="login-user" placeholder="Kullanıcı Adı">
+                        <input type="password" id="login-pass" placeholder="Şifre">
+                        <button class="btn" onclick="login()">Giriş</button>
+                    </div>
+                    <div style="flex:1; border-left:1px solid var(--border-color); padding-left:20px;">
+                        <h3>Kayıt Ol</h3>
+                        <input type="text" id="reg-user" placeholder="Kullanıcı Adı">
+                        <input type="password" id="reg-pass" placeholder="Şifre">
+                        <button class="btn btn-dark" onclick="register()">Kayıt Ol</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-admin" class="card hidden">
+                <div class="card-header-wave" style="background:var(--danger);">Yetkili Kontrol Paneli</div>
+                <div style="padding: 20px;">
+                    
+                    <h3>1. Markete Eşya Ekle</h3>
+                    <input type="text" id="adm-item-name" placeholder="Eşya Adı (Örn: VIP)">
+                    <input type="number" id="adm-item-price" placeholder="Fiyat (Kredi)">
+                    <input type="text" id="adm-item-img" placeholder="Resim/Logo URL (https://...)">
+                    <button class="btn" onclick="adminAddItem()">Eşyayı Ekle</button>
+                    <hr>
+
+                    <h3>2. Kupon Oluştur</h3>
+                    <input type="text" id="adm-coup-code" placeholder="Kupon Kodu (Örn: YAZ2026)">
+                    <input type="number" id="adm-coup-amount" placeholder="Verilecek Kredi Miktarı">
+                    <input type="number" id="adm-coup-limit" placeholder="Kaç Kişi Kullanabilir?">
+                    <button class="btn" onclick="adminAddCoupon()">Kupon Ekle</button>
+                    <hr>
+
+                    <h3>3. WebSender Bağlantı Ayarları</h3>
+                    <p style="font-size:12px; color:var(--text-muted);">WebSender plugininin config.yml dosyasındaki bilgileri girin.</p>
+                    <input type="text" id="adm-ws-ip" placeholder="WebSend IP (Örn: zenithback.falixsrv.me)">
+                    <input type="number" id="adm-ws-port" placeholder="Port">
+                    <input type="password" id="adm-ws-pass" placeholder="WebSend Şifresi">
+                    <button class="btn" onclick="adminSaveSettings()">Ayarları Kaydet</button>
+                    <hr>
+
+                    <h3>4. Ödeme Linkleri (Shopier/PayPal)</h3>
+                    <input type="text" id="adm-link-shopier" placeholder="Shopier Dükkan Linki">
+                    <input type="text" id="adm-link-paypal" placeholder="PayPal Linki">
+                    <button class="btn" onclick="adminSaveSettings()">Linkleri Kaydet</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="sidebar">
+            
+            <div class="card" id="widget-user">
+                <div class="card-header-wave">Kullanıcı Paneli <img src="https://crafatar.com/avatars/MHF_Steve?size=20" style="vertical-align:middle; border-radius:4px;"></div>
+                <div id="user-logged-out" style="padding: 20px; text-align: center;">
+                    <p>İşlem yapmak için giriş yapmalısınız.</p>
+                    <button class="btn" onclick="navigate('auth')">Giriş / Kayıt</button>
+                </div>
+                <div id="user-logged-in" class="hidden">
+                    <div class="user-panel-info">
+                        <p>Kullanıcı adı: <span id="u-name">Player</span></p>
+                        <p>E-Mail: <span id="u-email" style="color:orange;">ayarlanmadi</span></p>
+                        <p>Bakiye: <span id="u-bal" style="color:var(--primary);">0 ₺</span></p>
+                    </div>
+                    <div class="user-panel-info user-panel-buttons" style="padding-top:0;">
+                        <button class="btn btn-dark">📦 Depo</button>
+                        <button class="btn btn-dark">⚙️ Ayarlarım</button>
+                        <button class="btn" onclick="navigate('add-credit')">₺ Kredi Yükle</button>
+                        <button class="btn btn-dark" style="background:var(--danger);" onclick="logout()">Çıkış yap</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header-wave">Son Kredi Yükleyenler</div>
+                <table class="widget-table" id="list-credits">
+                    </table>
+            </div>
+
+            <div class="card">
+                <div class="card-header-wave">En Son Satın Alınanlar</div>
+                <table class="widget-table" id="list-purchases">
+                    </table>
+            </div>
+
+        </div>
     </div>
 
-    <div class="status-bar">
-        <span><span class="online-dot"></span> Bot: <b id="bot-status">Bağlanıyor...</b></span>
-        <span>Ping: <b id="ping">-- ms</b></span>
-        <span>IP: <b>echocraft.denince.biz</b></span>
-    </div>
-
-    <div class="grid">
-        <div class="category-card"><h3>!ayarlamalı</h3><p>Otomatik moderasyon ayarları.</p></div>
-        <div class="category-card"><h3>!eğlence</h3><p>Eğlence ve oyun komutları.</p></div>
-        <div class="category-card"><h3>!emojirol</h3><p>Emojiyle otomatik rol sistemi.</p></div>
-        <div class="category-card"><h3>!güvenlik</h3><p>Sunucu koruma komutları.</p></div>
-        <div class="category-card"><h3>!kullanıcı</h3><p>Profil ve üye komutları.</p></div>
-        <div class="category-card"><h3>!premium</h3><p>Özel paket avantajları.</p></div>
-        <div class="category-card"><h3>!puanmarket</h3><p>Ayrıcalık dükkanı.</p></div>
-        <div class="category-card"><h3>!yetkili</h3><p>Moderasyon araçları.</p></div>
-        <div class="category-card"><h3>!bot</h3><p>Ana teknik komutlar.</p></div>
-    </div>
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col" style="flex:2; padding-right:40px;">
+                <h4>HAKKIMIZDA</h4>
+                <p>Zenith Network, en iyi oyun deneyimini sunmak için tasarlanmıştır. Kaliteli sunucularımızda kesintisiz eğlenceye katılın.</p>
+            </div>
+            <div class="footer-col" style="flex:1;">
+                <h4>İLETİŞİM</h4>
+                <p>Discord: discord.gg/zenith</p>
+            </div>
+            <div class="footer-col" style="flex:1;">
+                <h4>HIZLI ERİŞİM</h4>
+                <p><a href="#">Anasayfa</a></p>
+                <p><a href="#">Market</a></p>
+                <p><a href="#">Kurallar</a></p>
+            </div>
+        </div>
+    </footer>
 
     <script>
-        // ÖZEL CURSOR TAKİBİ
-        const cursor = document.getElementById('cursor');
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX - 7 + 'px';
-            cursor.style.top = e.clientY - 7 + 'px';
-        });
+        // --- VERİTABANI SİMÜLASYONU (LocalStorage) ---
+        let db = JSON.parse(localStorage.getItem('zenithDB')) || {
+            users: { "admin": { pass: "123123", bal: 1000, role: "admin" } },
+            currentUser: null,
+            market: [
+                { id: 1, name: "VIP Üyelik", price: 50, img: "https://minotar.net/helm/MHF_GoldBlock/100.png" }
+            ],
+            coupons: {},
+            history_credits: [ {user: "admin", val: "100 ₺"}, {user: "InfernoX", val: "50 ₺"} ],
+            history_purchases: [ {user: "DroppedByORG", item: "VIP"} ],
+            settings: { shopier: "", paypal: "", ws_ip: "zenithback.falixsrv.me", ws_port: "", ws_pass: "" }
+        };
 
-        // BOT API BAĞLANTISI (FETCH)
-        async function fetchBotData() {
-            try {
-                const response = await fetch('http://localhost:3000/api/status');
-                const data = await response.json();
-                document.getElementById('bot-status').innerText = data.status;
-                document.getElementById('bot-status').style.color = "#00ff22";
-                document.getElementById('ping').innerText = data.ping;
-            } catch (err) {
-                document.getElementById('bot-status').innerText = "Çevrimdışı";
-                document.getElementById('bot-status').style.color = "red";
-            }
+        function saveDB() { localStorage.setItem('zenithDB', JSON.stringify(db)); }
+
+        // --- TEMA SİSTEMİ (Gece / Gündüz) ---
+        function toggleTheme() {
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            document.body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            localStorage.setItem('zenithTheme', isDark ? 'light' : 'dark');
+        }
+        
+        // Başlangıçta saati veya kayıtlı temayı kontrol et
+        if(localStorage.getItem('zenithTheme') === 'dark' || (!localStorage.getItem('zenithTheme') && new Date().getHours() > 18)) {
+            document.body.setAttribute('data-theme', 'dark');
         }
 
-        setInterval(fetchBotData, 5000);
-        fetchBotData();
+        // --- SAYFA YÖNLENDİRME ---
+        function navigate(page) {
+            document.querySelectorAll('.main-content > .card').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`page-${page}`).classList.remove('hidden');
+            renderUI();
+        }
+
+        // --- KULLANICI İŞLEMLERİ (Login/Register) ---
+        function register() {
+            let u = document.getElementById('reg-user').value;
+            let p = document.getElementById('reg-pass').value;
+            if(!u || !p) return alert("Boş bırakma!");
+            if(db.users[u]) return alert("Kullanıcı zaten var!");
+            db.users[u] = { pass: p, bal: 0, role: "player" };
+            saveDB(); alert("Kayıt başarılı! Giriş yapabilirsiniz.");
+        }
+
+        function login() {
+            let u = document.getElementById('login-user').value;
+            let p = document.getElementById('login-pass').value;
+            if(db.users[u] && db.users[u].pass === p) {
+                db.currentUser = u;
+                saveDB(); navigate('home');
+            } else alert("Hatalı şifre veya kullanıcı adı!");
+        }
+
+        function logout() { db.currentUser = null; saveDB(); navigate('home'); }
+
+        // --- ADMİN İŞLEMLERİ ---
+        function adminAddItem() {
+            let name = document.getElementById('adm-item-name').value;
+            let price = parseInt(document.getElementById('adm-item-price').value);
+            let img = document.getElementById('adm-item-img').value || "https://minotar.net/helm/MHF_Chest/100.png";
+            db.market.push({ id: Date.now(), name, price, img });
+            saveDB(); alert("Eşya markete eklendi!");
+        }
+
+        function adminAddCoupon() {
+            let code = document.getElementById('adm-coup-code').value;
+            let val = parseInt(document.getElementById('adm-coup-amount').value);
+            let limit = parseInt(document.getElementById('adm-coup-limit').value);
+            db.coupons[code] = { val, limit, used: 0 };
+            saveDB(); alert("Kupon eklendi!");
+        }
+
+        function adminSaveSettings() {
+            db.settings.shopier = document.getElementById('adm-link-shopier').value;
+            db.settings.paypal = document.getElementById('adm-link-paypal').value;
+            db.settings.ws_ip = document.getElementById('adm-ws-ip').value;
+            db.settings.ws_port = document.getElementById('adm-ws-port').value;
+            db.settings.ws_pass = document.getElementById('adm-ws-pass').value;
+            saveDB(); alert("Ayarlar kaydedildi!");
+        }
+
+        // --- KULLANICI AKSİYONLARI ---
+        function buyItem(id, name, price) {
+            if(!db.currentUser) return alert("Önce giriş yapın!");
+            if(db.users[db.currentUser].bal < price) return alert("Yetersiz bakiye!");
+            
+            db.users[db.currentUser].bal -= price;
+            db.history_purchases.unshift({ user: db.currentUser, item: name });
+            saveDB();
+            
+            // WebSender'a komut gönderme tetikleyicisi
+            sendWebSenderCommand(`lp user ${db.currentUser} parent add ${name.toLowerCase()}`);
+            alert(`${name} başarıyla satın alındı ve oyuna gönderildi!`);
+            renderUI();
+        }
+
+        function redeemCoupon() {
+            if(!db.currentUser) return alert("Giriş yapın!");
+            let code = document.getElementById('use-coupon-code').value;
+            let coup = db.coupons[code];
+            if(!coup) return alert("Geçersiz kupon!");
+            if(coup.used >= coup.limit) return alert("Bu kuponun kullanım sınırı dolmuş!");
+            
+            coup.used += 1;
+            db.users[db.currentUser].bal += coup.val;
+            db.history_credits.unshift({ user: db.currentUser, val: coup.val + " ₺ (Kupon)" });
+            saveDB(); alert(`Başarılı! Hesabınıza ${coup.val} ₺ eklendi.`);
+            renderUI();
+        }
+
+        function openPayment(method) {
+            let link = method === 'shopier' ? db.settings.shopier : db.settings.paypal;
+            if(!link) alert("Admin henüz ödeme linki eklememiş.");
+            else window.open(link, '_blank');
+        }
+
+        // --- WEBSENDER SİMÜLASYONU (JS Fetch) ---
+        // Not: Tarayıcılar güvenlik sebebiyle doğrudan TCP WebSender portuna bağlanamaz. 
+        // Bu kod, modern WebSend HTTP API'leri için yazılmış bir taslaktır.
+        async function sendWebSenderCommand(command) {
+            const ip = db.settings.ws_ip;
+            const port = db.settings.ws_port;
+            const pass = db.settings.ws_pass;
+            if(!ip || !port || !pass) return console.log("WebSender ayarları eksik, komut atlandı:", command);
+            
+            console.log(`Sunucuya komut gönderiliyor: ${ip}:${port} -> /${command}`);
+            // Gerçek bir backend olduğunda bu fetch çalışacaktır:
+            /*
+            fetch(`http://${ip}:${port}/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `password=${pass}&command=${command}`
+            }).catch(e => console.log("CORS/Bağlantı Hatası (Normaldir, Backend gerekir)"));
+            */
+        }
+
+        // --- EKRANLARI DOLDURMA (Render) ---
+        function renderUI() {
+            // Admin Sekmesi Görünürlüğü
+            if(db.currentUser && db.users[db.currentUser].role === "admin") {
+                document.getElementById('nav-admin').classList.remove('hidden');
+                document.getElementById('adm-ws-ip').value = db.settings.ws_ip;
+            } else {
+                document.getElementById('nav-admin').classList.add('hidden');
+            }
+
+            // Kullanıcı Paneli
+            if(db.currentUser) {
+                document.getElementById('user-logged-out').classList.add('hidden');
+                document.getElementById('user-logged-in').classList.remove('hidden');
+                document.getElementById('u-name').innerText = db.currentUser;
+                document.getElementById('u-bal').innerText = db.users[db.currentUser].bal + " ₺";
+            } else {
+                document.getElementById('user-logged-out').classList.remove('hidden');
+                document.getElementById('user-logged-in').classList.add('hidden');
+            }
+
+            // Market Doldur
+            let mHtml = "";
+            db.market.forEach(item => {
+                mHtml += `
+                <div class="market-item">
+                    <img src="${item.img}" alt="Logo">
+                    <h3 style="margin:5px 0;">${item.name}</h3>
+                    <p style="color:var(--primary); font-weight:bold;">${item.price} ₺</p>
+                    <button class="btn" onclick="buyItem(${item.id}, '${item.name}', ${item.price})">Satın Al</button>
+                </div>`;
+            });
+            document.getElementById('market-list').innerHTML = mHtml;
+
+            // Widget Doldur: Son Kredi
+            let credHtml = `<tr><th>#</th><th>Oyuncu</th><th>Miktar</th></tr>`;
+            db.history_credits.slice(0,4).forEach((c, i) => {
+                credHtml += `<tr><td>${i+1}</td><td><img src="https://minotar.net/avatar/${c.user}/24.png" class="mc-head">${c.user}</td><td>${c.val}</td></tr>`;
+            });
+            document.getElementById('list-credits').innerHTML = credHtml;
+
+            // Widget Doldur: Son Satın Alma
+            let purcHtml = `<tr><th>#</th><th>Oyuncu</th><th>Ürün</th></tr>`;
+            db.history_purchases.slice(0,4).forEach((p, i) => {
+                purcHtml += `<tr><td>${i+1}</td><td><img src="https://minotar.net/avatar/${p.user}/24.png" class="mc-head">${p.user}</td><td>${p.item}</td></tr>`;
+            });
+            document.getElementById('list-purchases').innerHTML = purcHtml;
+        }
+
+        // Sayfa yüklenince ilk verileri render et
+        window.onload = () => {
+            renderUI();
+            navigate('home');
+        };
     </script>
 </body>
 </html>
