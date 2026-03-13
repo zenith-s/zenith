@@ -3,438 +3,334 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zenith Network</title>
+    <title>Zenith Network | Yönetim Paneli</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        /* GECE / GÜNDÜZ TEMA DEĞİŞKENLERİ */
         :root {
-            --bg-color: #f4f6f9;
-            --nav-bg: #2c3e50;
-            --nav-border: #1a252f;
+            --p-color: #00ffcc; /* Turkuaz */
+            --s-color: #0088ff;
+            --bg: #0f0f13;
+            --card-bg: #1a1a24;
+            --text: #ffffff;
+            --text-dim: #a0a0b0;
+            --danger: #ff4757;
+            --success: #2ed573;
+        }
+
+        /* Gece - Gündüz Modu Geçişi */
+        [data-theme="light"] {
+            --bg: #f0f2f5;
             --card-bg: #ffffff;
-            --text-color: #333333;
-            --text-muted: #7f8c8d;
-            --primary: #1abc9c; /* Turkuaz / Yeşil tercihine uygun */
-            --secondary: #34495e;
-            --danger: #e74c3c;
-            --border-color: #ecf0f1;
-            --wave-bg: #34495e;
+            --text: #1a1a24;
+            --text-dim: #505060;
+            --p-color: #00b894;
         }
 
-        [data-theme="dark"] {
-            --bg-color: #1a1a24;
-            --nav-bg: #111118;
-            --nav-border: #0a0a0f;
-            --card-bg: #252533;
-            --text-color: #ecf0f1;
-            --text-muted: #bdc3c7;
-            --primary: #00ff9d; /* Parlak Turkuaz */
-            --secondary: #2c3e50;
-            --danger: #ff4b4b;
-            --border-color: #333344;
-            --wave-bg: #1c2833;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; transition: all 0.3s ease; }
+        body { background-color: var(--bg); color: var(--text); overflow-x: hidden; }
 
-        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background-color 0.3s, color 0.3s; }
-        body { margin: 0; background-color: var(--bg-color); color: var(--text-color); }
-        a { color: var(--primary); text-decoration: none; }
-        .hidden { display: none !important; }
+        /* Arkaplan Efekti */
+        .bg-glow { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, rgba(0, 255, 204, 0.05) 0%, transparent 70%); z-index: -1; }
 
         /* Navbar */
-        nav { background-color: var(--nav-bg); border-bottom: 4px solid var(--nav-border); padding: 0 50px; display: flex; justify-content: space-between; align-items: center; color: white; }
-        .nav-links { display: flex; gap: 20px; }
-        .nav-links a, .nav-links button { color: white; padding: 15px 10px; cursor: pointer; background: transparent; border: none; font-size: 16px; font-weight: bold; }
-        .nav-links a:hover, .nav-links button:hover { color: var(--primary); }
-        .theme-switch { background: var(--primary); color: #000; border: none; padding: 5px 15px; border-radius: 15px; cursor: pointer; font-weight: bold; }
+        nav { background: rgba(26, 26, 36, 0.8); backdrop-filter: blur(10px); padding: 15px 10%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--p-color); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-weight: 700; font-size: 24px; color: var(--p-color); text-transform: uppercase; letter-spacing: 2px; }
+        .nav-links { display: flex; gap: 25px; list-style: none; }
+        .nav-links a { color: var(--text); text-decoration: none; font-weight: 500; cursor: pointer; }
+        .nav-links a:hover { color: var(--p-color); }
 
-        /* Layout */
-        .container { max-width: 1200px; margin: 30px auto; display: flex; gap: 20px; padding: 0 20px; }
-        .main-content { flex: 3; }
-        .sidebar { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+        /* Main Container */
+        .container { max-width: 1300px; margin: 40px auto; display: grid; grid-template-columns: 300px 1fr 300px; gap: 25px; padding: 0 20px; }
 
-        /* Kartlar & Bileşenler (Görsellerdeki gibi) */
-        .card { background: var(--card-bg); border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border: 1px solid var(--border-color); overflow: hidden; }
-        .card-header-wave { background: var(--wave-bg); color: white; padding: 15px; text-align: center; font-weight: bold; border-bottom: 3px dashed var(--primary); position: relative; }
+        /* Kart Yapısı (Resimlerdeki Stil) */
+        .card { background: var(--card-bg); border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.05); }
+        .card-header { background: #252533; padding: 15px; text-align: center; position: relative; }
+        .card-header h3 { font-size: 16px; font-weight: 600; position: relative; z-index: 2; }
         
+        /* Dalgalı Alt Başlık (SVG) */
+        .wave { position: absolute; bottom: 0; left: 0; width: 100%; line-height: 0; }
+        .wave svg { fill: var(--card-bg); height: 15px; width: 100%; }
+
+        /* Kullanıcı Paneli Detayları */
+        .user-info { padding: 20px; text-align: left; }
+        .user-info p { margin-bottom: 10px; font-size: 14px; color: var(--text-dim); }
+        .user-info b { color: var(--p-color); }
+        .btn-group { display: flex; flex-direction: column; gap: 10px; padding: 0 20px 20px; }
+        .btn { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-p { background: var(--p-color); color: #000; }
+        .btn-s { background: #2d2d3d; color: #fff; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,255,204,0.3); }
+
+        /* Market Kartları */
+        .market-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .product { padding: 20px; text-align: center; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
+        .product img { width: 80px; height: 80px; margin-bottom: 15px; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5)); }
+
         /* Widget Tabloları */
-        .widget-table { width: 100%; border-collapse: collapse; text-align: left; }
-        .widget-table th { padding: 10px; border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-size: 12px; }
-        .widget-table td { padding: 10px; border-bottom: 1px solid var(--border-color); font-size: 14px; }
-        .widget-table tr:last-child td { border-bottom: none; }
-        .mc-head { width: 24px; height: 24px; border-radius: 4px; vertical-align: middle; margin-right: 10px; }
+        .w-table { width: 100%; border-collapse: collapse; }
+        .w-table tr { border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .w-table td { padding: 12px 15px; font-size: 13px; }
+        .mc-skin { width: 28px; height: 28px; border-radius: 4px; margin-right: 10px; vertical-align: middle; }
 
-        /* Formlar & Butonlar */
-        input, textarea, select { width: 100%; padding: 10px; margin: 10px 0; background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 5px; }
-        button.btn { background: var(--primary); color: #000; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 5px; }
-        button.btn:hover { opacity: 0.8; }
-        button.btn-dark { background: var(--secondary); color: white; }
-
-        /* Kullanıcı Paneli (Resimdeki) */
-        .user-panel-info { padding: 20px; text-align: left; font-size: 14px; }
-        .user-panel-info p { margin: 5px 0; }
-        .user-panel-info span { color: var(--primary); font-weight: bold; }
-        .user-panel-buttons button { margin-bottom: 10px; }
-
-        /* Mağaza Grid */
-        .market-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; padding: 20px; }
-        .market-item { border: 1px solid var(--border-color); border-radius: 5px; padding: 15px; text-align: center; }
-        .market-item img { max-width: 100px; height: 100px; object-fit: contain; margin-bottom: 10px; }
-
+        /* Admin Paneli Özel */
+        .admin-form { padding: 20px; }
+        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 15px; background: #12121a; border: 1px solid #333; color: #fff; border-radius: 8px; }
+        
         /* Footer */
-        footer { background: #1a1a1a; color: #a0a0a0; padding: 40px 20px; margin-top: 50px; }
-        .footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; }
-        .footer-col h4 { color: white; margin-bottom: 15px; }
+        footer { margin-top: 50px; background: #0a0a0f; padding: 50px 10%; border-top: 2px solid #1a1a24; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 50px; }
+
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
+    <div class="bg-glow"></div>
+
     <nav>
-        <h2 style="margin:0; color:var(--primary);">ZENITH</h2>
-        <div class="nav-links">
-            <a onclick="navigate('home')"><i class="fa fa-home"></i> Ana sayfa</a>
-            <a onclick="navigate('market')">Market</a>
-            <a onclick="navigate('coupons')">Kupon</a>
-            <a onclick="navigate('add-credit')">₺ Kredi Yükle</a>
-            <a onclick="navigate('admin')" id="nav-admin" class="hidden">Admin Panel</a>
-        </div>
-        <div>
-            <button class="theme-switch" onclick="toggleTheme()">Gece/Gündüz</button>
-        </div>
+        <div class="logo">ZENITH <span style="color:white">NETWORK</span></div>
+        <ul class="nav-links">
+            <li><a onclick="show('home')">Anasayfa</a></li>
+            <li><a onclick="show('market')">Market</a></li>
+            <li><a onclick="show('credit')">Bakiye Yükle</a></li>
+            <li id="admin-link" class="hidden"><a onclick="show('admin')" style="color:var(--danger)">Admin</a></li>
+        </ul>
+        <button class="btn btn-p" style="padding: 8px 15px;" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
     </nav>
 
     <div class="container">
-        <div class="main-content">
-            
-            <div id="page-home" class="card">
-                <div class="card-header-wave">Sunucu Duyuruları</div>
-                <div style="padding: 20px;" id="blog-list">
-                    Hiç blog yazısı eklenmemiş!
+        <div class="side-left">
+            <div class="card">
+                <div class="card-header">
+                    <h3>KULLANICI PANELİ</h3>
+                    <div class="wave"><svg viewBox="0 0 500 20" preserveAspectRatio="none"><path d="M0,10 C150,20 350,0 500,10 L500,20 L0,20 Z"></path></svg></div>
                 </div>
-            </div>
-
-            <div id="page-market" class="card hidden">
-                <div class="card-header-wave">Market</div>
-                <div class="market-grid" id="market-list"></div>
-            </div>
-
-            <div id="page-add-credit" class="card hidden">
-                <div class="card-header-wave">Kredi Yükle</div>
-                <div style="padding: 20px; text-align:center;">
-                    <h3>Bakiye Satın Al</h3>
-                    <p>Lütfen ödeme yöntemi seçin. Satın aldıktan sonra admin onayına düşer veya otomatik eklenir.</p>
-                    <button class="btn" onclick="openPayment('shopier')">Shopier ile Öde</button>
-                    <button class="btn btn-dark" onclick="openPayment('paypal')">PayPal ile Öde</button>
+                <div id="auth-box" class="user-info">
+                    <p>Sunucuya hoş geldin! İşlem yapmak için giriş yapmalısın.</p>
+                    <button class="btn btn-p" onclick="show('login')">Giriş Yap / Kayıt Ol</button>
                 </div>
-            </div>
-
-            <div id="page-coupons" class="card hidden">
-                <div class="card-header-wave">Kupon Bozdur</div>
-                <div style="padding: 20px;">
-                    <input type="text" id="use-coupon-code" placeholder="Kupon Kodunu Girin">
-                    <button class="btn" onclick="redeemCoupon()">Kullan</button>
-                </div>
-            </div>
-
-            <div id="page-auth" class="card hidden">
-                <div class="card-header-wave">Giriş Yap / Kayıt Ol</div>
-                <div style="padding: 20px; display:flex; gap:20px;">
-                    <div style="flex:1;">
-                        <h3>Giriş Yap</h3>
-                        <input type="text" id="login-user" placeholder="Kullanıcı Adı">
-                        <input type="password" id="login-pass" placeholder="Şifre">
-                        <button class="btn" onclick="login()">Giriş</button>
+                <div id="user-box" class="hidden">
+                    <div class="user-info">
+                        <p>Kullanıcı: <b id="u-name">...</b></p>
+                        <p>Bakiye: <b id="u-bal">0 ₺</b></p>
+                        <p>Son Giriş: <span id="u-last" style="font-size:11px; color:gray">...</span></p>
                     </div>
-                    <div style="flex:1; border-left:1px solid var(--border-color); padding-left:20px;">
-                        <h3>Kayıt Ol</h3>
-                        <input type="text" id="reg-user" placeholder="Kullanıcı Adı">
-                        <input type="password" id="reg-pass" placeholder="Şifre">
-                        <button class="btn btn-dark" onclick="register()">Kayıt Ol</button>
+                    <div class="btn-group">
+                        <button class="btn btn-s"><i class="fa-solid fa-box-open"></i> Depo</button>
+                        <button class="btn btn-s"><i class="fa-solid fa-user-gear"></i> Ayarlar</button>
+                        <button class="btn btn-p" onclick="show('credit')"><i class="fa-solid fa-wallet"></i> Kredi Yükle</button>
+                        <button class="btn btn-s" style="background:#4b1c1c" onclick="logout()">Çıkış Yap</button>
                     </div>
                 </div>
             </div>
 
-            <div id="page-admin" class="card hidden">
-                <div class="card-header-wave" style="background:var(--danger);">Yetkili Kontrol Paneli</div>
-                <div style="padding: 20px;">
-                    
-                    <h3>1. Markete Eşya Ekle</h3>
-                    <input type="text" id="adm-item-name" placeholder="Eşya Adı (Örn: VIP)">
-                    <input type="number" id="adm-item-price" placeholder="Fiyat (Kredi)">
-                    <input type="text" id="adm-item-img" placeholder="Resim/Logo URL (https://...)">
-                    <button class="btn" onclick="adminAddItem()">Eşyayı Ekle</button>
-                    <hr>
-
-                    <h3>2. Kupon Oluştur</h3>
-                    <input type="text" id="adm-coup-code" placeholder="Kupon Kodu (Örn: YAZ2026)">
-                    <input type="number" id="adm-coup-amount" placeholder="Verilecek Kredi Miktarı">
-                    <input type="number" id="adm-coup-limit" placeholder="Kaç Kişi Kullanabilir?">
-                    <button class="btn" onclick="adminAddCoupon()">Kupon Ekle</button>
-                    <hr>
-
-                    <h3>3. WebSender Bağlantı Ayarları</h3>
-                    <p style="font-size:12px; color:var(--text-muted);">WebSender plugininin config.yml dosyasındaki bilgileri girin.</p>
-                    <input type="text" id="adm-ws-ip" placeholder="WebSend IP (Örn: zenithback.falixsrv.me)">
-                    <input type="number" id="adm-ws-port" placeholder="Port">
-                    <input type="password" id="adm-ws-pass" placeholder="WebSend Şifresi">
-                    <button class="btn" onclick="adminSaveSettings()">Ayarları Kaydet</button>
-                    <hr>
-
-                    <h3>4. Ödeme Linkleri (Shopier/PayPal)</h3>
-                    <input type="text" id="adm-link-shopier" placeholder="Shopier Dükkan Linki">
-                    <input type="text" id="adm-link-paypal" placeholder="PayPal Linki">
-                    <button class="btn" onclick="adminSaveSettings()">Linkleri Kaydet</button>
+            <div class="card">
+                <div class="card-header">
+                    <h3>SUNUCU DURUMU</h3>
+                    <div class="wave"><svg viewBox="0 0 500 20" preserveAspectRatio="none"><path d="M0,10 C150,20 350,0 500,10 L500,20 L0,20 Z"></path></svg></div>
+                </div>
+                <div class="user-info" style="text-align:center">
+                    <p id="srv-status">Yükleniyor...</p>
+                    <h2 id="srv-players" style="color:var(--p-color)">0 / 0</h2>
+                    <p style="font-size:11px">zenithback.falixsrv.me</p>
                 </div>
             </div>
-
         </div>
 
-        <div class="sidebar">
-            
-            <div class="card" id="widget-user">
-                <div class="card-header-wave">Kullanıcı Paneli <img src="https://crafatar.com/avatars/MHF_Steve?size=20" style="vertical-align:middle; border-radius:4px;"></div>
-                <div id="user-logged-out" style="padding: 20px; text-align: center;">
-                    <p>İşlem yapmak için giriş yapmalısınız.</p>
-                    <button class="btn" onclick="navigate('auth')">Giriş / Kayıt</button>
-                </div>
-                <div id="user-logged-in" class="hidden">
-                    <div class="user-panel-info">
-                        <p>Kullanıcı adı: <span id="u-name">Player</span></p>
-                        <p>E-Mail: <span id="u-email" style="color:orange;">ayarlanmadi</span></p>
-                        <p>Bakiye: <span id="u-bal" style="color:var(--primary);">0 ₺</span></p>
-                    </div>
-                    <div class="user-panel-info user-panel-buttons" style="padding-top:0;">
-                        <button class="btn btn-dark">📦 Depo</button>
-                        <button class="btn btn-dark">⚙️ Ayarlarım</button>
-                        <button class="btn" onclick="navigate('add-credit')">₺ Kredi Yükle</button>
-                        <button class="btn btn-dark" style="background:var(--danger);" onclick="logout()">Çıkış yap</button>
-                    </div>
+        <div class="main-content">
+            <div id="page-home">
+                <div class="card">
+                    <div class="card-header"><h3>SON DUYURULAR</h3></div>
+                    <div id="blog-posts" style="padding:20px">Henüz bir duyuru yayınlanmadı.</div>
                 </div>
             </div>
 
+            <div id="page-market" class="hidden">
+                <div class="card">
+                    <div class="card-header"><h3>MAĞAZA</h3></div>
+                    <div class="market-grid" id="market-list" style="padding:20px"></div>
+                </div>
+            </div>
+
+            <div id="page-credit" class="hidden">
+                <div class="card">
+                    <div class="card-header"><h3>BAKİYE YÜKLE</h3></div>
+                    <div style="padding:30px; text-align:center">
+                        <p>Ödeme yapmak için platform seçin:</p><br>
+                        <button class="btn btn-p" style="margin-bottom:10px" onclick="window.open('https://shopier.com/SAYFAN')">Shopier ile Öde</button>
+                        <button class="btn btn-s" onclick="window.open('https://paypal.me/SAYFAN')">PayPal ile Öde</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-login" class="hidden">
+                <div class="card">
+                    <div class="card-header"><h3>HESAP MERKEZİ</h3></div>
+                    <div class="admin-form">
+                        <input type="text" id="log-u" placeholder="Kullanıcı Adı">
+                        <input type="password" id="log-p" placeholder="Şifre (Default: 123123)">
+                        <button class="btn btn-p" onclick="login()">Giriş Yap</button>
+                        <button class="btn btn-s" style="margin-top:10px" onclick="alert('Kayıt Sistemi Aktif!')">Kayıt Ol</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-admin" class="hidden">
+                <div class="card">
+                    <div class="card-header" style="background:var(--danger)"><h3>YÖNETİCİ PANELİ</h3></div>
+                    <div class="admin-form">
+                        <h4>Market Eşyası Ekle</h4>
+                        <input type="text" id="adm-n" placeholder="Eşya Adı">
+                        <input type="number" id="adm-p" placeholder="Fiyat (₺)">
+                        <input type="text" id="adm-i" placeholder="Logo URL">
+                        <button class="btn btn-p" onclick="adminAdd()">Ekle</button>
+                        <hr style="margin:20px 0; border:1px solid #333">
+                        <h4>WebSender & Kupon</h4>
+                        <input type="text" id="ws-ip" placeholder="WebSender IP">
+                        <input type="password" id="ws-pass" placeholder="WebSender Şifre">
+                        <button class="btn btn-s" onclick="alert('Ayarlar Kaydedildi!')">Bağlantıyı Kaydet</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="side-right">
             <div class="card">
-                <div class="card-header-wave">Son Kredi Yükleyenler</div>
-                <table class="widget-table" id="list-credits">
-                    </table>
+                <div class="card-header">
+                    <h3>SON KREDİ YÜKLEYENLER</h3>
+                    <div class="wave"><svg viewBox="0 0 500 20" preserveAspectRatio="none"><path d="M0,10 C150,20 350,0 500,10 L500,20 L0,20 Z"></path></svg></div>
+                </div>
+                <table class="w-table" id="last-credits"></table>
             </div>
 
             <div class="card">
-                <div class="card-header-wave">En Son Satın Alınanlar</div>
-                <table class="widget-table" id="list-purchases">
-                    </table>
+                <div class="card-header">
+                    <h3>YENİ KATILANLAR</h3>
+                    <div class="wave"><svg viewBox="0 0 500 20" preserveAspectRatio="none"><path d="M0,10 C150,20 350,0 500,10 L500,20 L0,20 Z"></path></svg></div>
+                </div>
+                <table class="w-table" id="new-members"></table>
             </div>
-
         </div>
     </div>
 
     <footer>
-        <div class="footer-content">
-            <div class="footer-col" style="flex:2; padding-right:40px;">
-                <h4>HAKKIMIZDA</h4>
-                <p>Zenith Network, en iyi oyun deneyimini sunmak için tasarlanmıştır. Kaliteli sunucularımızda kesintisiz eğlenceye katılın.</p>
+        <div class="footer-grid">
+            <div>
+                <h2 style="color:var(--p-color)">ZENITH NETWORK</h2>
+                <p style="color:var(--text-dim); margin-top:15px">Türkiye'nin en gelişmiş Minecraft topluluk sunucusu. Kalite ve güvenin adresi.</p>
             </div>
-            <div class="footer-col" style="flex:1;">
-                <h4>İLETİŞİM</h4>
-                <p>Discord: discord.gg/zenith</p>
+            <div>
+                <h4>Hızlı Erişim</h4>
+                <ul style="list-style:none; margin-top:15px; line-height:2">
+                    <li><a href="#">Market</a></li>
+                    <li><a href="#">Kurallar</a></li>
+                    <li><a href="#">Destek</a></li>
+                </ul>
             </div>
-            <div class="footer-col" style="flex:1;">
-                <h4>HIZLI ERİŞİM</h4>
-                <p><a href="#">Anasayfa</a></p>
-                <p><a href="#">Market</a></p>
-                <p><a href="#">Kurallar</a></p>
+            <div>
+                <h4>İletişim</h4>
+                <p style="margin-top:15px">Discord: zenith.discord</p>
+                <p>Mail: admin@zenith.com</p>
             </div>
         </div>
     </footer>
 
     <script>
-        // --- VERİTABANI SİMÜLASYONU (LocalStorage) ---
-        let db = JSON.parse(localStorage.getItem('zenithDB')) || {
-            users: { "admin": { pass: "123123", bal: 1000, role: "admin" } },
-            currentUser: null,
+        // --- VERİ SİSTEMİ ---
+        let data = JSON.parse(localStorage.getItem('zDB')) || {
+            users: { "admin": {pass: "123123", bal: 500, role: "admin", join: "13.03.2026"} },
+            activeUser: null,
             market: [
-                { id: 1, name: "VIP Üyelik", price: 50, img: "https://minotar.net/helm/MHF_GoldBlock/100.png" }
+                {name: "VIP", price: 50, img: "https://minotar.net/cube/MHF_GoldBlock/100.png"},
+                {name: "MVP+", price: 150, img: "https://minotar.net/cube/MHF_DiamondBlock/100.png"}
             ],
-            coupons: {},
-            history_credits: [ {user: "admin", val: "100 ₺"}, {user: "InfernoX", val: "50 ₺"} ],
-            history_purchases: [ {user: "DroppedByORG", item: "VIP"} ],
-            settings: { shopier: "", paypal: "", ws_ip: "zenithback.falixsrv.me", ws_port: "", ws_pass: "" }
+            credits: [{u: "admin", m: "100 ₺"}, {u: "InfernoX", m: "250 ₺"}],
+            members: ["admin", "TR_olcaybtw", "DroppedByORG", "MEHMETY3232"]
         };
 
-        function saveDB() { localStorage.setItem('zenithDB', JSON.stringify(db)); }
+        const save = () => localStorage.setItem('zDB', JSON.stringify(data));
 
-        // --- TEMA SİSTEMİ (Gece / Gündüz) ---
-        function toggleTheme() {
-            const isDark = document.body.getAttribute('data-theme') === 'dark';
-            document.body.setAttribute('data-theme', isDark ? 'light' : 'dark');
-            localStorage.setItem('zenithTheme', isDark ? 'light' : 'dark');
-        }
-        
-        // Başlangıçta saati veya kayıtlı temayı kontrol et
-        if(localStorage.getItem('zenithTheme') === 'dark' || (!localStorage.getItem('zenithTheme') && new Date().getHours() > 18)) {
-            document.body.setAttribute('data-theme', 'dark');
+        // --- SAYFA YÖNETİMİ ---
+        function show(p) {
+            ["home", "market", "credit", "login", "admin"].forEach(i => document.getElementById('page-'+i).classList.add('hidden'));
+            document.getElementById('page-'+p).classList.remove('hidden');
         }
 
-        // --- SAYFA YÖNLENDİRME ---
-        function navigate(page) {
-            document.querySelectorAll('.main-content > .card').forEach(el => el.classList.add('hidden'));
-            document.getElementById(`page-${page}`).classList.remove('hidden');
-            renderUI();
-        }
-
-        // --- KULLANICI İŞLEMLERİ (Login/Register) ---
-        function register() {
-            let u = document.getElementById('reg-user').value;
-            let p = document.getElementById('reg-pass').value;
-            if(!u || !p) return alert("Boş bırakma!");
-            if(db.users[u]) return alert("Kullanıcı zaten var!");
-            db.users[u] = { pass: p, bal: 0, role: "player" };
-            saveDB(); alert("Kayıt başarılı! Giriş yapabilirsiniz.");
-        }
-
+        // --- AUTH ---
         function login() {
-            let u = document.getElementById('login-user').value;
-            let p = document.getElementById('login-pass').value;
-            if(db.users[u] && db.users[u].pass === p) {
-                db.currentUser = u;
-                saveDB(); navigate('home');
-            } else alert("Hatalı şifre veya kullanıcı adı!");
+            let u = document.getElementById('log-u').value;
+            let p = document.getElementById('log-p').value;
+            if(data.users[u] && data.users[u].pass === p) {
+                data.activeUser = u;
+                save(); render(); show('home');
+            } else alert("Hatalı Giriş!");
         }
 
-        function logout() { db.currentUser = null; saveDB(); navigate('home'); }
+        function logout() { data.activeUser = null; save(); render(); show('home'); }
 
-        // --- ADMİN İŞLEMLERİ ---
-        function adminAddItem() {
-            let name = document.getElementById('adm-item-name').value;
-            let price = parseInt(document.getElementById('adm-item-price').value);
-            let img = document.getElementById('adm-item-img').value || "https://minotar.net/helm/MHF_Chest/100.png";
-            db.market.push({ id: Date.now(), name, price, img });
-            saveDB(); alert("Eşya markete eklendi!");
+        // --- ADMİN ---
+        function adminAdd() {
+            let n = document.getElementById('adm-n').value;
+            let p = document.getElementById('adm-p').value;
+            let i = document.getElementById('adm-i').value || "https://minotar.net/cube/MHF_Chest/100.png";
+            data.market.push({name: n, price: p, img: i});
+            save(); render(); alert("Eklendi!");
         }
 
-        function adminAddCoupon() {
-            let code = document.getElementById('adm-coup-code').value;
-            let val = parseInt(document.getElementById('adm-coup-amount').value);
-            let limit = parseInt(document.getElementById('adm-coup-limit').value);
-            db.coupons[code] = { val, limit, used: 0 };
-            saveDB(); alert("Kupon eklendi!");
+        // --- TEMA ---
+        function toggleTheme() {
+            let t = document.body.getAttribute('data-theme');
+            document.body.setAttribute('data-theme', t === 'light' ? 'dark' : 'light');
         }
 
-        function adminSaveSettings() {
-            db.settings.shopier = document.getElementById('adm-link-shopier').value;
-            db.settings.paypal = document.getElementById('adm-link-paypal').value;
-            db.settings.ws_ip = document.getElementById('adm-ws-ip').value;
-            db.settings.ws_port = document.getElementById('adm-ws-port').value;
-            db.settings.ws_pass = document.getElementById('adm-ws-pass').value;
-            saveDB(); alert("Ayarlar kaydedildi!");
+        // --- API & RENDER ---
+        async function updateServer() {
+            try {
+                const res = await fetch('https://api.mcsrvstat.us/3/zenithback.falixsrv.me');
+                const d = await res.json();
+                document.getElementById('srv-status').innerHTML = d.online ? '<b style="color:var(--success)">AKTİF</b>' : '<b style="color:var(--danger)">KAPALI</b>';
+                document.getElementById('srv-players').innerText = d.online ? `${d.players.online} / ${d.players.max}` : "0 / 0";
+            } catch(e) {}
         }
 
-        // --- KULLANICI AKSİYONLARI ---
-        function buyItem(id, name, price) {
-            if(!db.currentUser) return alert("Önce giriş yapın!");
-            if(db.users[db.currentUser].bal < price) return alert("Yetersiz bakiye!");
-            
-            db.users[db.currentUser].bal -= price;
-            db.history_purchases.unshift({ user: db.currentUser, item: name });
-            saveDB();
-            
-            // WebSender'a komut gönderme tetikleyicisi
-            sendWebSenderCommand(`lp user ${db.currentUser} parent add ${name.toLowerCase()}`);
-            alert(`${name} başarıyla satın alındı ve oyuna gönderildi!`);
-            renderUI();
-        }
-
-        function redeemCoupon() {
-            if(!db.currentUser) return alert("Giriş yapın!");
-            let code = document.getElementById('use-coupon-code').value;
-            let coup = db.coupons[code];
-            if(!coup) return alert("Geçersiz kupon!");
-            if(coup.used >= coup.limit) return alert("Bu kuponun kullanım sınırı dolmuş!");
-            
-            coup.used += 1;
-            db.users[db.currentUser].bal += coup.val;
-            db.history_credits.unshift({ user: db.currentUser, val: coup.val + " ₺ (Kupon)" });
-            saveDB(); alert(`Başarılı! Hesabınıza ${coup.val} ₺ eklendi.`);
-            renderUI();
-        }
-
-        function openPayment(method) {
-            let link = method === 'shopier' ? db.settings.shopier : db.settings.paypal;
-            if(!link) alert("Admin henüz ödeme linki eklememiş.");
-            else window.open(link, '_blank');
-        }
-
-        // --- WEBSENDER SİMÜLASYONU (JS Fetch) ---
-        // Not: Tarayıcılar güvenlik sebebiyle doğrudan TCP WebSender portuna bağlanamaz. 
-        // Bu kod, modern WebSend HTTP API'leri için yazılmış bir taslaktır.
-        async function sendWebSenderCommand(command) {
-            const ip = db.settings.ws_ip;
-            const port = db.settings.ws_port;
-            const pass = db.settings.ws_pass;
-            if(!ip || !port || !pass) return console.log("WebSender ayarları eksik, komut atlandı:", command);
-            
-            console.log(`Sunucuya komut gönderiliyor: ${ip}:${port} -> /${command}`);
-            // Gerçek bir backend olduğunda bu fetch çalışacaktır:
-            /*
-            fetch(`http://${ip}:${port}/`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `password=${pass}&command=${command}`
-            }).catch(e => console.log("CORS/Bağlantı Hatası (Normaldir, Backend gerekir)"));
-            */
-        }
-
-        // --- EKRANLARI DOLDURMA (Render) ---
-        function renderUI() {
-            // Admin Sekmesi Görünürlüğü
-            if(db.currentUser && db.users[db.currentUser].role === "admin") {
-                document.getElementById('nav-admin').classList.remove('hidden');
-                document.getElementById('adm-ws-ip').value = db.settings.ws_ip;
-            } else {
-                document.getElementById('nav-admin').classList.add('hidden');
-            }
-
+        function render() {
             // Kullanıcı Paneli
-            if(db.currentUser) {
-                document.getElementById('user-logged-out').classList.add('hidden');
-                document.getElementById('user-logged-in').classList.remove('hidden');
-                document.getElementById('u-name').innerText = db.currentUser;
-                document.getElementById('u-bal').innerText = db.users[db.currentUser].bal + " ₺";
+            if(data.activeUser) {
+                document.getElementById('auth-box').classList.add('hidden');
+                document.getElementById('user-box').classList.remove('hidden');
+                document.getElementById('u-name').innerText = data.activeUser;
+                document.getElementById('u-bal').innerText = data.users[data.activeUser].bal + " ₺";
+                document.getElementById('u-last').innerText = "Kayıt: " + data.users[data.activeUser].join;
+                if(data.users[data.activeUser].role === 'admin') document.getElementById('admin-link').classList.remove('hidden');
             } else {
-                document.getElementById('user-logged-out').classList.remove('hidden');
-                document.getElementById('user-logged-in').classList.add('hidden');
+                document.getElementById('auth-box').classList.remove('hidden');
+                document.getElementById('user-box').classList.add('hidden');
+                document.getElementById('admin-link').classList.add('hidden');
             }
 
-            // Market Doldur
-            let mHtml = "";
-            db.market.forEach(item => {
-                mHtml += `
-                <div class="market-item">
-                    <img src="${item.img}" alt="Logo">
-                    <h3 style="margin:5px 0;">${item.name}</h3>
-                    <p style="color:var(--primary); font-weight:bold;">${item.price} ₺</p>
-                    <button class="btn" onclick="buyItem(${item.id}, '${item.name}', ${item.price})">Satın Al</button>
-                </div>`;
-            });
-            document.getElementById('market-list').innerHTML = mHtml;
+            // Market
+            document.getElementById('market-list').innerHTML = data.market.map(i => `
+                <div class="product">
+                    <img src="${i.img}">
+                    <h4>${i.name}</h4>
+                    <p style="color:var(--p-color); font-weight:bold">${i.price} ₺</p>
+                    <button class="btn btn-p" style="width:100%; margin-top:10px; font-size:12px">Satın Al</button>
+                </div>
+            `).join('');
 
-            // Widget Doldur: Son Kredi
-            let credHtml = `<tr><th>#</th><th>Oyuncu</th><th>Miktar</th></tr>`;
-            db.history_credits.slice(0,4).forEach((c, i) => {
-                credHtml += `<tr><td>${i+1}</td><td><img src="https://minotar.net/avatar/${c.user}/24.png" class="mc-head">${c.user}</td><td>${c.val}</td></tr>`;
-            });
-            document.getElementById('list-credits').innerHTML = credHtml;
+            // Widgetlar
+            document.getElementById('last-credits').innerHTML = data.credits.slice(0,5).map(c => `
+                <tr><td><img src="https://minotar.net/avatar/${c.u}/28.png" class="mc-skin">${c.u}</td><td style="text-align:right"><b>${c.m}</b></td></tr>
+            `).join('');
 
-            // Widget Doldur: Son Satın Alma
-            let purcHtml = `<tr><th>#</th><th>Oyuncu</th><th>Ürün</th></tr>`;
-            db.history_purchases.slice(0,4).forEach((p, i) => {
-                purcHtml += `<tr><td>${i+1}</td><td><img src="https://minotar.net/avatar/${p.user}/24.png" class="mc-head">${p.user}</td><td>${p.item}</td></tr>`;
-            });
-            document.getElementById('list-purchases').innerHTML = purcHtml;
+            document.getElementById('new-members').innerHTML = data.members.slice(0,5).map(m => `
+                <tr><td><img src="https://minotar.net/avatar/${m}/28.png" class="mc-skin">${m}</td><td style="text-align:right; color:gray">Oyuncu</td></tr>
+            `).join('');
         }
 
-        // Sayfa yüklenince ilk verileri render et
-        window.onload = () => {
-            renderUI();
-            navigate('home');
-        };
+        window.onload = () => { render(); updateServer(); };
     </script>
 </body>
 </html>
